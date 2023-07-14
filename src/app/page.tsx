@@ -1,44 +1,11 @@
-"use client"
-import { signIn, signOut, useSession } from "next-auth/react"
-import { Avatar, Button, CustomFlowbiteTheme, Flowbite, Spinner } from "flowbite-react"
+import { CustomFlowbiteTheme, Flowbite } from "@/lib/flowbiteComponents"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import HomeScreen from "@/components/home/homeScreen"
+import LoginScreen from "@/components/home/loginScreen"
 
-export default function Home() {
-  const { data: session, status } = useSession()
-  const getContent = () => {
-    if (status === "loading")
-      return (
-        <div className={"w-full h-screen flex justify-center items-center"}>
-          <Spinner color={"success"} size={"xl"} />
-        </div>
-      )
-
-    if (status === "unauthenticated")
-      return (
-        <div className={"w-full h-screen flex flex-col gap-4 justify-center items-center"}>
-          <h1 className={"text-3xl"}>
-            Welcome to <span className={"text-emerald-600"}>Dividify</span>!
-          </h1>
-          <p>Divide your Spotify playlists by collaborators!</p>
-          <Button color={"primary"} onClick={() => signIn("spotify")}>
-            Sign in to Spotify
-          </Button>
-        </div>
-      )
-
-    if (session) {
-      return (
-        <div className={"w-full h-screen flex flex-col gap-4 justify-center items-center"}>
-          <h1 className={"text-3xl"}>
-            Welcome<span className={"text-emerald-600"}> {session.user?.name}</span>!
-          </h1>
-          <Avatar img={session.user?.image ?? ""} rounded size={"lg"} />
-          <Button color={"primary"} onClick={() => signOut()}>
-            Sign out
-          </Button>
-        </div>
-      )
-    }
-  }
+export default async function Home() {
+  const session = await getServerSession(authOptions)
 
   const customTheme: CustomFlowbiteTheme = {
     button: {
@@ -54,5 +21,7 @@ export default function Home() {
     },
   }
 
-  return <Flowbite theme={{ theme: customTheme }}>{getContent()}</Flowbite>
+  return (
+    <Flowbite theme={{ theme: customTheme }}>{session ? <HomeScreen session={session} /> : <LoginScreen />}</Flowbite>
+  )
 }
