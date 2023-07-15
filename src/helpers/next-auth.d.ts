@@ -1,6 +1,5 @@
 import { Account as NextAuthAccount, DefaultSession, Session } from "next-auth"
 import { JWT as NextAuthJWT } from "next-auth/jwt"
-import { ISODateString } from "next-auth/src/core/types"
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -12,7 +11,7 @@ declare module "next-auth" {
     }
     accessToken?: string
     error?: string
-    expires: ISODateString
+    expires: string
   }
 
   interface Account extends NextAuthAccount {
