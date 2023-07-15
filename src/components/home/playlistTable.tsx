@@ -4,12 +4,15 @@ import React, { useState } from "react"
 import { SimplifiedPlaylistObject } from "@/lib/spotify/spotify"
 import { Pagination, Table } from "flowbite-react"
 import Image from "next/image"
+import { useSession } from "next-auth/react"
+import { reorderPlaylist } from "@/helpers/utils.helper"
 
 interface PlaylistTableProps {
   playlists: SimplifiedPlaylistObject[]
 }
 
 const PlaylistTable = ({ playlists }: PlaylistTableProps) => {
+  const token = useSession().data?.accessToken
   const [currentPage, setCurrentPage] = useState(1)
 
   // No of Records to be displayed on each page
@@ -22,6 +25,8 @@ const PlaylistTable = ({ playlists }: PlaylistTableProps) => {
   const currentRecords = playlists.slice(indexOfFirstRecord, indexOfLastRecord)
 
   const nPages = Math.ceil(playlists.length / recordsPerPage)
+
+  const [disableButtons, setDisableButtons] = useState(false)
 
   return (
     <div className={"w-3/5 flex flex-col items-center"}>
@@ -47,16 +52,20 @@ const PlaylistTable = ({ playlists }: PlaylistTableProps) => {
                     width={0}
                     height={0}
                     sizes={"100vw"}
-                    className={"object-cover float-left h-12 w-12"}
+                    className={"object-cover float-left h-12 w-12 max-w-[3rem]"}
                   />
                 </Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                   {item.name}
                 </Table.Cell>
                 <Table.Cell>
-                  <a className="font-medium text-emerald-600 hover:underline" href={`/playlist/${item.id}`}>
+                  <button
+                    disabled={disableButtons}
+                    className="font-medium text-emerald-600 hover:underline disabled:text-gray-500 disabled:opacity-50 disabled:hover:no-underline"
+                    onClick={() => reorderPlaylist(token, item.id, setDisableButtons)}
+                  >
                     <p>Reorder</p>
-                  </a>
+                  </button>
                 </Table.Cell>
               </Table.Row>
             )

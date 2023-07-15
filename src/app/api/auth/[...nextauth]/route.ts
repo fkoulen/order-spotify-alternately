@@ -44,7 +44,12 @@ const refreshAccessToken = async (token: JWT): Promise<JWT> => {
     })
 }
 
-const scope = "playlist-read-private playlist-read-collaborative"
+const scope = [
+  "playlist-read-private",
+  "playlist-read-collaborative",
+  "playlist-modify-public",
+  "playlist-modify-private",
+]
 
 export const authOptions: AuthOptions = {
   secret: env("SECRET"),
@@ -52,7 +57,7 @@ export const authOptions: AuthOptions = {
     SpotifyProvider({
       clientId: client_id,
       clientSecret: client_secret,
-      authorization: `https://accounts.spotify.com/authorize?${querystring.stringify({ scope: scope })}`,
+      authorization: `https://accounts.spotify.com/authorize?${querystring.stringify({ scope: scope.join(" ") })}`,
     }),
   ],
   callbacks: {
