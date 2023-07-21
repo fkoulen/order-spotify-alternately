@@ -18,7 +18,7 @@
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.11",
     "flowbite": "^1.7.0",
-    "flowbite-react": "^0.4.11",
+    "flowbite-react": "^0.5.0",
     "next": "13.4.11",
     "next-auth": "^4.22.1",
     "oazapfts": "^4.7.1",
